@@ -21,9 +21,9 @@ jobs:
         id: datetime
         run: |
           RELEASE_DATE=$(date +'%Y.%-m.%-d')
-          RELEASE_TIME=$(date +'%H.%M.%S')
-          echo "RELEASE_NAME=${RELEASE_DATE}.${RELEASE_TIME}" >> $GITHUB_ENV
-          echo "RELEASE_TAG=${RELEASE_DATE}.${RELEASE_TIME}" >> $GITHUB_ENV
+          RELEASE_TIME=$(date +'%H-%M-%S')
+          echo "RELEASE_NAME=${RELEASE_DATE}-${RELEASE_TIME}" >> $GITHUB_ENV
+          echo "RELEASE_TAG=${RELEASE_DATE}-${RELEASE_TIME}" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         run: |
