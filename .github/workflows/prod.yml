@@ -3,28 +3,32 @@ name: Release Pipeline
 on:
   push:
     branches:
-      - master  # Trigger the workflow when code is pushed to the master branch
+      - master # Trigger the workflow when code is pushed to the master branch
 
 jobs:
   create-release:
     runs-on: ubuntu-latest
     permissions:
-        contents: write
-        pull-requests: write
-        repository-projects: write
+      contents: write
+      pull-requests: write
+      repository-projects: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Get current date
-        id: date
-        run: echo "RELEASE_DATE=$(date +'%Y.%-m.%-d')" >> $GITHUB_ENV
+      - name: Get current date and time
+        id: datetime
+        run: |
+          RELEASE_DATE=$(date +'%Y.%-m.%-d')
+          RELEASE_TIME=$(date +'%H.%M.%S')
+          echo "RELEASE_NAME=${RELEASE_DATE}.${RELEASE_TIME}" >> $GITHUB_ENV
+          echo "RELEASE_TAG=${RELEASE_DATE}.${RELEASE_TIME}" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         run: |
-          gh release create ${{ env.RELEASE_DATE }} \
-            --title "Release ${{ env.RELEASE_DATE }}" \
+          gh release create ${{ env.RELEASE_TAG }} \
+            --title "Release ${{ env.RELEASE_NAME }}" \
             --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
