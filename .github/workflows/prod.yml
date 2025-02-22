@@ -8,10 +8,6 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
-    permissions:
-        contents: write
-        pull-requests: write
-        repository-projects: write
 
     steps:
       - name: Checkout code
@@ -22,12 +18,9 @@ jobs:
         run: echo "RELEASE_DATE=$(date +'%Y.%-m.%-d')" >> $GITHUB_ENV
 
       - name: Create GitHub Release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ env.RELEASE_DATE }}  # Use the current date as the tag
-          release_name: Release ${{ env.RELEASE_DATE }}  # Use the current date as the release name
-          draft: false
-          prerelease: false
-          generate_release_notes: true  # Automatically generate release notes
+        run: |
+          gh release create ${{ env.RELEASE_DATE }} \
+            --title "Release ${{ env.RELEASE_DATE }}" \
+            --generate-notes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
