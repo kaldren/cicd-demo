@@ -1,34 +1,20 @@
 name: Release Pipeline
 
 on:
-  push:
-    branches:
-      - master # Trigger the workflow when code is pushed to the master branch
+  release:
+    types: [created]
 
 jobs:
-  create-release:
+  release-job:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      repository-projects: write
-
+    # Only run if the release targets the 'master' branch
+    if: github.event.release.target_commitish == 'master'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Get current date and time
-        id: datetime
+      - name: Print Release Tag
         run: |
-          RELEASE_DATE=$(date +'%Y.%-m.%-d')
-          RELEASE_TIME=$(date +'%H%M%S')
-          echo "RELEASE_NAME=${RELEASE_DATE}-${RELEASE_TIME}" >> $GITHUB_ENV
-          echo "RELEASE_TAG=${RELEASE_DATE}-${RELEASE_TIME}" >> $GITHUB_ENV
-
-      - name: Create GitHub Release
-        run: |
-          gh release create ${{ env.RELEASE_TAG }} \
-            --title "${{ env.RELEASE_NAME }}" \
-            --generate-notes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          echo "Release version (tag): ${{ github.event.release.tag_name }}"
+          echo "Release name: ${{ github.event.release.name }}"
+          echo "Target branch/commit: ${{ github.event.release.target_commitish }}"
